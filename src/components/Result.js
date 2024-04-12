@@ -10,8 +10,7 @@ function Result() {
                 ((item.correctAnswer === quizItem.ans) ? score += 1 : score) : score
         ))
     ))
-    console.log(score, values)
-
+    
     return (
         <div> {score} </div>
     )

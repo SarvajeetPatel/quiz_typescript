@@ -69,8 +69,7 @@ export default function App() {
   const handleTabs = (i: number) => {
     setActiveStep(i)
   }
-  console.log(answers, "answers", skipped, steps.length)
-
+  
   return (
     <Box sx={{ width: '100%' }}>
       <div className='stepsLabel'>
