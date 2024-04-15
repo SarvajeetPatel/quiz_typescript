@@ -10,6 +10,31 @@ export default function App() {
   const [skipped, setSkipped] = useState(new Set<number>());
   const theme = useTheme();
   const [answers, setAnswers] = useState([])
+  const [timeLeft, setTimeLeft] = useState(QuizQues.length * 30)
+  const [mins, setMins] = useState(0)
+  const [seconds, setSeconds] = useState(0)
+
+  useEffect(() => {
+    if (!timeLeft) return;
+    const intervalId = setInterval(() => {
+      setTimeLeft(timeLeft - 1);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+  useEffect(() => {
+    if (timeLeft > 60) {
+      setMins(Math.floor(timeLeft / 60))
+      setSeconds(timeLeft % 60)
+    } else {
+      setSeconds(timeLeft)
+    }
+    if (timeLeft === 0) {
+      setActiveStep(9)
+      handleNext()
+    }
+    // eslint-disable-next-line
+  }, [timeLeft])
 
   useEffect(() => {
     const storedValue: any = localStorage.getItem('answers')
@@ -55,23 +80,33 @@ export default function App() {
   const handleReset = () => {
     localStorage.removeItem('step')
     localStorage.removeItem('answers')
+    setAnswers([]);
     setActiveStep(0);
   }
 
   const handleChange = (e: any) => {
     const tempArr: any = answers;
-    tempArr.push({ 'que': e.target.name, 'ans': e.target.value })
+    if (tempArr.filter((item: any) => (Number(item.que) === (activeStep + 1))).length > 0) {
+      tempArr.filter((item: any) => (Number(item.que) === (activeStep + 1)))[0].ans = e.target.value
+    } else {
+      tempArr.push({ 'que': e.target.name, 'ans': e.target.value })
+    }
     localStorage.setItem('answers', JSON.stringify(tempArr))
     localStorage.setItem('step', JSON.stringify(activeStep))
     setAnswers(tempArr)
   }
 
   const handleTabs = (i: number) => {
-    setActiveStep(i)
+    if (activeStep !== 10) {
+      setActiveStep(i)
+    } else {
+      alert('Test ended! You cannot go back, but can restart it!')
+    }
   }
-  
+
   return (
     <Box sx={{ width: '100%' }}>
+      <h3> TIME LEFT IS {(mins > 9) ? mins : `0${mins}`} : {(seconds > 9) ? seconds : `0${seconds}`} ! </h3>
       <div className='stepsLabel'>
         {QuizQues.map((ques, index) => (
           < div >

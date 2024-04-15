@@ -10,9 +10,13 @@ function Result() {
                 ((item.correctAnswer === quizItem.ans) ? score += 1 : score) : score
         ))
     ))
-    
+
     return (
-        <div> {score} </div>
+        <>
+            <h2> NO. OF QUESTIONS ATTEMPTED : {values.length}/10 </h2>
+            <h3> YOUR OVERALL RESULT IS : {score} MARKS </h3>
+            <h3> No. OF INCORRECT ARE : {values.length - score} </h3>
+        </>
     )
 }
 
