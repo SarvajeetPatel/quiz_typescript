@@ -14,11 +14,11 @@ const quiz = [
         options: ["Venus", "Mars", "Jupiter", "Saturn"],
         correctAnswer: "Mars"
     },
-    // {
-    //     question: "What is the chemical symbol for water?",
-    //     options: ["H2O", "CO2", "NaCl", "CH4"],
-    //     correctAnswer: "H2O"
-    // },
+    {
+        question: "What is the chemical symbol for water?",
+        options: ["H2O", "CO2", "NaCl", "CH4"],
+        correctAnswer: "H2O"
+    },
     // {
     //     question: "Who painted the Mona Lisa?",
     //     options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"],

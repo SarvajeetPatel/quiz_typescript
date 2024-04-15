@@ -1,12 +1,12 @@
 import QuizQues from './QuizQues'
 
 function Result() {
+    var userInputs = [];
     const storedValue = localStorage.getItem('currentData')
-    if (storedValue) {
+    if (storedValue !== null) {
         const parsedData = JSON.parse(storedValue)
-        var userInputs = parsedData.answers || []
+        userInputs = parsedData?.answers || []
     }
-    console.log(userInputs)
     var score = 0;
     userInputs.map((quizItem) => (
         QuizQues.filter((item, index) => (
@@ -17,9 +17,9 @@ function Result() {
 
     return (
         <>
-            <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs.length}/10 </h2>
+            <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs?.length} / {QuizQues.length} </h2>
             <h3> YOUR OVERALL RESULT IS : {score} MARKS </h3>
-            <h3> No. OF INCORRECT ARE : {userInputs.length - score} </h3>
+            <h3> No. OF INCORRECT ARE : {userInputs?.length - score} </h3>
         </>
     )
 }

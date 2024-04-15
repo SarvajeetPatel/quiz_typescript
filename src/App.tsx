@@ -38,7 +38,7 @@ export default function App() {
       });
     }, 1000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [timeLeft]);
 
   useEffect(() => {
     if (timeLeft > 60) {
