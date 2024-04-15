@@ -1,50 +1,61 @@
 import { useEffect, useState } from 'react'
 import { Typography, Button, Box, useTheme, MobileStepper } from '@mui/material'
 import QuizQues from './components/QuizQues'
-import { KeyboardArrowRight, KeyboardArrowLeft } from '@mui/icons-material';
-import Result from './components/Result';
+import { KeyboardArrowRight, KeyboardArrowLeft } from '@mui/icons-material'
+import Result from './components/Result'
 
 export default function App() {
-  const steps = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   const [activeStep, setActiveStep] = useState(0);
   const [skipped, setSkipped] = useState(new Set<number>());
   const theme = useTheme();
-  const [answers, setAnswers] = useState([])
-  const [timeLeft, setTimeLeft] = useState(QuizQues.length * 30)
-  const [mins, setMins] = useState(0)
-  const [seconds, setSeconds] = useState(0)
+  const [answers, setAnswers] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(QuizQues.length * 30);
+  const [mins, setMins] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
-    if (!timeLeft) return;
+    const storedData = localStorage.getItem('currentData');
+    const storedTime = localStorage.getItem('time');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setActiveStep(parsedData.step || 0);
+      setAnswers(parsedData.answers || []);
+    }
+    if (storedTime) {
+      setTimeLeft(parseInt(storedTime, 10));
+    }
+  }, []);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
+      setTimeLeft(prevTime => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else {
+          clearInterval(intervalId);
+          return 0;
+        }
+      });
     }, 1000);
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  }, []);
 
   useEffect(() => {
     if (timeLeft > 60) {
-      setMins(Math.floor(timeLeft / 60))
-      setSeconds(timeLeft % 60)
+      setMins(Math.floor(timeLeft / 60));
+      setSeconds(timeLeft % 60);
     } else {
-      setSeconds(timeLeft)
+      setMins(0);
+      setSeconds(timeLeft);
     }
     if (timeLeft === 0) {
-      setActiveStep(9)
-      handleNext()
+      setActiveStep(QuizQues.length);
     }
-    // eslint-disable-next-line
-  }, [timeLeft])
-
-  useEffect(() => {
-    const storedValue: any = localStorage.getItem('answers')
-    const currStep: any = localStorage.getItem('step');
-    setAnswers(storedValue ? JSON.parse(storedValue) : [])
-    setActiveStep(Number(currStep) ? Number(currStep) : 0)
-  }, [])
+    localStorage.setItem('time', timeLeft.toString());
+  }, [timeLeft]);
 
   const isStepOptional = (step: number) => {
-    return step < steps.length;
+    return step < QuizQues.length;
   };
 
   const isStepSkipped = (step: number) => {
@@ -52,24 +63,46 @@ export default function App() {
   };
 
   const handleNext = () => {
-    localStorage.setItem('step', JSON.stringify(activeStep + 1))
+    const tempData = {
+      'step': activeStep + 1,
+      'answers': answers
+    }
+    localStorage.setItem('currentData', JSON.stringify(tempData))
+
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
-      newSkipped = new Set(newSkipped.values());
-      newSkipped.delete(activeStep);
+      newSkipped = new Set(newSkipped.values())
+      newSkipped.delete(activeStep)
     }
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setSkipped(newSkipped);
+
+    if (activeStep < QuizQues.length - 1) {
+      setActiveStep((prevActiveStep: any) => prevActiveStep + 1)
+    } else if ((activeStep + 1) === QuizQues.length) {
+      setActiveStep((prevActiveStep: any) => prevActiveStep + 1)
+      setMins(0)
+      setSeconds(0)
+      setTimeLeft(0)
+    }
+    setSkipped(newSkipped)
   };
 
   const handleBack = () => {
-    localStorage.setItem('step', JSON.stringify(activeStep - 1))
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const tempData = {
+      'step': activeStep - 1,
+      'answers': answers
+    }
+    localStorage.setItem('currentData', JSON.stringify(tempData))
+    setActiveStep((prevActiveStep: any) => prevActiveStep - 1);
   };
 
   const handleSkip = () => {
-    localStorage.setItem('step', JSON.stringify(activeStep + 1))
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    const tempData = {
+      'step': activeStep + 1,
+      'answers': answers
+    }
+    localStorage.setItem('currentData', JSON.stringify(tempData))
+
+    setActiveStep((prevActiveStep: any) => prevActiveStep + 1);
     setSkipped((prevSkipped) => {
       const newSkipped = new Set(prevSkipped.values());
       newSkipped.add(activeStep);
@@ -78,26 +111,35 @@ export default function App() {
   };
 
   const handleReset = () => {
-    localStorage.removeItem('step')
-    localStorage.removeItem('answers')
-    setAnswers([]);
-    setActiveStep(0);
+    localStorage.removeItem('currentData')
+    localStorage.removeItem('time')
+    setAnswers([])
+    setActiveStep(0)
+    setTimeLeft(QuizQues.length * 30)
   }
 
-  const handleChange = (e: any) => {
-    const tempArr: any = answers;
-    if (tempArr.filter((item: any) => (Number(item.que) === (activeStep + 1))).length > 0) {
-      tempArr.filter((item: any) => (Number(item.que) === (activeStep + 1)))[0].ans = e.target.value
-    } else {
-      tempArr.push({ 'que': e.target.name, 'ans': e.target.value })
-    }
-    localStorage.setItem('answers', JSON.stringify(tempArr))
-    localStorage.setItem('step', JSON.stringify(activeStep))
-    setAnswers(tempArr)
-  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAnswers(prevAnswers => {
+      const updatedAnswers: any = [...prevAnswers];
+      const index = updatedAnswers.findIndex((ans: any) => ans.que === name);
+      if (index !== -1) {
+        updatedAnswers[index].ans = value;
+      } else {
+        updatedAnswers.push({ que: name, ans: value });
+      }
+      localStorage.setItem('currentData', JSON.stringify({ step: activeStep, answers: updatedAnswers }));
+      return updatedAnswers;
+    });
+  };
 
   const handleTabs = (i: number) => {
-    if (activeStep !== 10) {
+    if (activeStep !== QuizQues.length) {
+      const userInput = {
+        'step': i,
+        'answers': answers
+      }
+      localStorage.setItem('current data', JSON.stringify(userInput))
       setActiveStep(i)
     } else {
       alert('Test ended! You cannot go back, but can restart it!')
@@ -106,7 +148,7 @@ export default function App() {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <h3> TIME LEFT IS {(mins > 9) ? mins : `0${mins}`} : {(seconds > 9) ? seconds : `0${seconds}`} ! </h3>
+      <h3> TIME LEFT IS {(mins > 9) ? mins : `0${mins}`} : {(seconds > 9) ? (seconds !== 60 && seconds) : `0${seconds}`} ! </h3>
       <div className='stepsLabel'>
         {QuizQues.map((ques, index) => (
           < div >
@@ -115,7 +157,7 @@ export default function App() {
         ))}
       </div>
       {
-        activeStep === steps.length ? (
+        activeStep === QuizQues.length ? (
           <>
             <Typography sx={{ mt: 2, mb: 1 }}>
               <Result />
@@ -130,7 +172,7 @@ export default function App() {
             <form>
               {QuizQues.map((ques, index) => (
                 index === activeStep &&
-                <div key={index}> {ques.question}
+                <div className='mainForm' key={index}> {ques.question}
                   {ques.options.map((queOption) => (
                     <>
                       <br /><label>
@@ -143,15 +185,15 @@ export default function App() {
               <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
               <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                 {isStepOptional(activeStep) && (
-                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
+                  <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }} disabled={activeStep >= QuizQues.length - 1}>
                     Skip
                   </Button>
                 )}
                 <MobileStepper
-                  variant="progress" steps={10} position="static" activeStep={activeStep} sx={{ maxWidth: 400, flexGrow: 1 }}
+                  variant="progress" steps={QuizQues.length} position="static" activeStep={activeStep} sx={{ maxWidth: 400, flexGrow: 1 }}
                   nextButton={
                     <Button size="small" onClick={handleNext}>
-                      {activeStep === 9 ? 'FINISH' : 'NEXT'}
+                      {activeStep === QuizQues.length - 1 ? 'FINISH' : 'NEXT'}
                       {theme.direction === 'rtl' ? (
                         <KeyboardArrowLeft />
                       ) : (

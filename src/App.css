@@ -35,6 +35,10 @@
   margin-bottom: 30px;
 }
 
+.mainForm{
+  padding-left: 30px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

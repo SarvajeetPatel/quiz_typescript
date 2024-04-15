@@ -1,10 +1,14 @@
 import QuizQues from './QuizQues'
 
 function Result() {
-    const storedValue = localStorage.getItem('answers')
-    const values = storedValue ? JSON.parse(storedValue) : []
+    const storedValue = localStorage.getItem('currentData')
+    if (storedValue) {
+        const parsedData = JSON.parse(storedValue)
+        var userInputs = parsedData.answers || []
+    }
+    console.log(userInputs)
     var score = 0;
-    values.map((quizItem) => (
+    userInputs.map((quizItem) => (
         QuizQues.filter((item, index) => (
             ((index + 1) === Number(quizItem.que)) ?
                 ((item.correctAnswer === quizItem.ans) ? score += 1 : score) : score
@@ -13,9 +17,9 @@ function Result() {
 
     return (
         <>
-            <h2> NO. OF QUESTIONS ATTEMPTED : {values.length}/10 </h2>
+            <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs.length}/10 </h2>
             <h3> YOUR OVERALL RESULT IS : {score} MARKS </h3>
-            <h3> No. OF INCORRECT ARE : {values.length - score} </h3>
+            <h3> No. OF INCORRECT ARE : {userInputs.length - score} </h3>
         </>
     )
 }
