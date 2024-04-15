@@ -152,7 +152,7 @@ export default function App() {
       <div className='stepsLabel'>
         {QuizQues.map((ques, index) => (
           < div >
-            <button onClick={() => handleTabs(index)}> {index + 1} </button>
+            <button className={activeStep === index ? `activePage` : 'regularButton'} onClick={() => handleTabs(index)}> {index + 1} </button>
           </div>
         ))}
       </div>

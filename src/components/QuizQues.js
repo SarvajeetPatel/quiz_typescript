@@ -19,36 +19,36 @@ const quiz = [
         options: ["H2O", "CO2", "NaCl", "CH4"],
         correctAnswer: "H2O"
     },
-    // {
-    //     question: "Who painted the Mona Lisa?",
-    //     options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"],
-    //     correctAnswer: "Leonardo da Vinci"
-    // },
-    // {
-    //     question: "What is the tallest mammal in the world?",
-    //     options: ["Hippopotamus", "Giraffe", "Elephant", "Rhino"],
-    //     correctAnswer: "Giraffe"
-    // },
-    // {
-    //     question: "Which country is famous for producing tea?",
-    //     options: ["China", "India", "Japan", "Brazil"],
-    //     correctAnswer: "India"
-    // },
-    // {
-    //     question: "What is the chemical symbol for gold?",
-    //     options: ["Au", "Ag", "Fe", "Cu"],
-    //     correctAnswer: "Au"
-    // },
-    // {
-    //     question: "What is the main ingredient in guacamole?",
-    //     options: ["Avocado", "Tomato", "Onion", "Cilantro"],
-    //     correctAnswer: "Avocado"
-    // },
-    // {
-    //     question: "Who developed the theory of relativity?",
-    //     options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Stephen Hawking"],
-    //     correctAnswer: "Albert Einstein"
-    // }
+    {
+        question: "Who painted the Mona Lisa?",
+        options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Michelangelo"],
+        correctAnswer: "Leonardo da Vinci"
+    },
+    {
+        question: "What is the tallest mammal in the world?",
+        options: ["Hippopotamus", "Giraffe", "Elephant", "Rhino"],
+        correctAnswer: "Giraffe"
+    },
+    {
+        question: "Which country is famous for producing tea?",
+        options: ["China", "India", "Japan", "Brazil"],
+        correctAnswer: "India"
+    },
+    {
+        question: "What is the chemical symbol for gold?",
+        options: ["Au", "Ag", "Fe", "Cu"],
+        correctAnswer: "Au"
+    },
+    {
+        question: "What is the main ingredient in guacamole?",
+        options: ["Avocado", "Tomato", "Onion", "Cilantro"],
+        correctAnswer: "Avocado"
+    },
+    {
+        question: "Who developed the theory of relativity?",
+        options: ["Isaac Newton", "Albert Einstein", "Galileo Galilei", "Stephen Hawking"],
+        correctAnswer: "Albert Einstein"
+    }
 ]
 
 export default quiz;

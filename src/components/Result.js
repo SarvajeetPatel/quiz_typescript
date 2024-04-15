@@ -18,6 +18,7 @@ function Result() {
     return (
         <>
             <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs?.length} / {QuizQues.length} </h2>
+            <h3> QUES SKIPPED : {QuizQues.length - userInputs?.length} </h3>
             <h3> YOUR OVERALL RESULT IS : {score} MARKS </h3>
             <h3> No. OF INCORRECT ARE : {userInputs?.length - score} </h3>
         </>

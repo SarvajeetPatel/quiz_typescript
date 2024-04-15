@@ -35,8 +35,20 @@
   margin-bottom: 30px;
 }
 
-.mainForm{
+.mainForm {
   padding-left: 30px;
+}
+
+.regularButton {
+  width: 30px;
+  height: 30px;
+}
+
+.activePage {
+  background-color: #1d4a57;
+  color: whitesmoke;
+  width: 30px;
+  height: 30px;
 }
 
 @keyframes App-logo-spin {
