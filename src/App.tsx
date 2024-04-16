@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Typography, Button, Box, useTheme, MobileStepper } from '@mui/material'
+import { Typography, Button, Box } from '@mui/material'
 import QuizQues from './components/QuizQues'
-import { KeyboardArrowRight, KeyboardArrowLeft } from '@mui/icons-material'
+import { KeyboardArrowRight } from '@mui/icons-material'
 import Result from './components/Result'
 import { useFormik } from 'formik'
 
@@ -9,16 +9,16 @@ type formikValues = {
   name?: string,
   step?: number,
   answers?: [],
-  validUser?: boolean
+  validUser?: boolean,
 }
 
 export default function App(props: formikValues) {
-  const theme = useTheme();
   const [timeLeft, setTimeLeft] = useState(QuizQues.length * 30);
   const [mins, setMins] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [timePerPage, setTimerPerPage] = useState(30)
 
-  const { values, handleChange, handleSubmit } = useFormik({
+  const { values, handleChange, setFieldValue } = useFormik({
     initialValues: {
       name: props.name || '',
       step: props.step || 0,
@@ -33,11 +33,15 @@ export default function App(props: formikValues) {
   useEffect(() => {
     const storedData = localStorage.getItem('currentData');
     if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      values.step = parsedData.step || 0;
-      values.answers = parsedData.answers || [];
-      setTimeLeft(parseInt(parsedData.time, 10));
+      const parsedData = JSON.parse(storedData)
+      setFieldValue('validUser', parsedData.validUser || false)
+      setFieldValue('step', parsedData.step || 0)
+      setFieldValue('name', parsedData.name || '')
+      setFieldValue('answers', parsedData.answers || [])
+      setTimeLeft(parseInt(parsedData.time, 10))
+      setTimerPerPage(parseInt(parsedData.timePerPage, 10))
     }
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -55,62 +59,84 @@ export default function App(props: formikValues) {
   }, [timeLeft]);
 
   useEffect(() => {
-    if (timeLeft > 60) {
-      setMins(Math.floor(timeLeft / 60));
-      setSeconds(timeLeft % 60);
-    } else {
-      setMins(0);
-      setSeconds(timeLeft);
+    const newInterval = setInterval(() => {
+      setTimerPerPage(prevTime => {
+        if (prevTime > 0) {
+          return prevTime - 1;
+        } else {
+          clearInterval(newInterval);
+          return 0;
+        }
+      });
+    }, 1000);
+    return () => clearInterval(newInterval);
+  }, [timePerPage])
+
+  useEffect(() => {
+    if (values.validUser) {
+      if (timeLeft > 60) {
+        setMins(Math.floor(timeLeft / 60));
+        setSeconds(timeLeft % 60);
+      } else {
+        setMins(0);
+        setSeconds(timeLeft);
+      }
+      if (timeLeft === 0) {
+        setFieldValue('step', QuizQues.length)
+      }
+      const tempData = { name: values.name, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
+      localStorage.setItem('currentData', JSON.stringify(tempData))
     }
-    if (timeLeft === 0) {
-      values.step = QuizQues.length;
-    }
-    const tempData = {
-      name: values.name,
-      step: values.step,
-      time: timeLeft.toString(),
-      answers: values.answers
-    }
-    localStorage.setItem('currentData', JSON.stringify(tempData));
+    // eslint-disable-next-line
   }, [timeLeft]);
 
-  const handleNext = () => {
-    const tempData = {
-      name: values.name,
-      step: values.step + 1,
-      time: timeLeft,
-      answers: values.answers
+  useEffect(() => {
+    if (values.validUser) {
+      if (timePerPage === 0 && values.step <= QuizQues.length - 1) {
+        // setFieldValue('step', values.step + 1)
+        handleNext()
+        setTimerPerPage(30)
+      } else if (values.step === QuizQues.length) {
+        setTimerPerPage(0)
+      }
+      const tempData = { name: values.name, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
+      localStorage.setItem('currentData', JSON.stringify(tempData))
     }
+    // eslint-disable-next-line
+  }, [timePerPage])
+
+  const handleNext = () => {
+    const tempData = { name: values.name, timePerPage: timePerPage, validUser: values.validUser, step: values.step + 1, time: timeLeft, answers: values.answers }
     localStorage.setItem('currentData', JSON.stringify(tempData))
 
     if (values.step < QuizQues.length - 1) {
-      values.step = values.step + 1
+      setTimerPerPage(30)
+      setFieldValue('step', values.step + 1)
     } else if ((values.step + 1) === QuizQues.length) {
-      values.step = values.step + 1
+      const existingData = localStorage.getItem('all results')
+      if (existingData) {
+        const tempArr = JSON.parse(existingData) || []
+        tempArr.push(tempData)
+        localStorage.setItem('all results', JSON.stringify(tempArr))
+      } else {
+        const tempArr = []
+        tempArr.push(tempData)
+        localStorage.setItem('all results', JSON.stringify(tempArr))
+      }
+      setFieldValue('step', values.step + 1)
       setMins(0)
       setSeconds(0)
       setTimeLeft(0)
+      setTimerPerPage(0)
     }
   };
-
-  const handleBack = () => {
-    const tempData = {
-      name: values.name,
-      step: values.step - 1,
-      time: timeLeft,
-      answers: values.answers
-    }
-    localStorage.setItem('currentData', JSON.stringify(tempData))
-    values.step = values.step - 1;
-  };
-
+  
   const handleReset = () => {
     localStorage.removeItem('currentData')
-    values.name = ''
-    values.answers = []
-    values.step = 0
-    values.validUser = false
-    setTimeLeft(QuizQues.length * 30)
+    setFieldValue('name', '')
+    setFieldValue('answers', [])
+    setFieldValue('step', 0)
+    setFieldValue('validUser', false)
   }
 
   const handleChoice = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,39 +148,50 @@ export default function App(props: formikValues) {
     } else {
       updatedAnswers.push({ que: name, ans: value });
     }
-    localStorage.setItem('currentData', JSON.stringify({ name: values.name, step: values.step, time: timeLeft, answers: updatedAnswers }));
-    values.answers = updatedAnswers;
+    localStorage.setItem('currentData', JSON.stringify({ name: values.name, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft, answers: updatedAnswers }));
+    setFieldValue('answers', updatedAnswers)
   };
 
   const handleTabs = (i: number) => {
-    if (values.step !== QuizQues.length) {
-      const tempData = {
-        name: values.name,
-        step: values.step,
-        time: timeLeft,
-        answers: values.answers
-      }
-      localStorage.setItem('currentData', JSON.stringify(tempData))
-      values.step = i
+    if (i > values.step) {
+      setFieldValue('step', i)
+      setTimerPerPage(30)
+    } else if (values.step === QuizQues.length) {
+      alert('You cannot go to previous page after submitting the test!')
     } else {
-      alert('Test ended! You cannot go back, but can restart it!')
+      alert('Questions Skipped!')
     }
   }
 
-  const handlePage = () => {
-    console.log(values)
-    values.step = 0
-    values.validUser = (true)
+  const handleName = () => {
+    const storedName = localStorage.getItem('all results')
+    if (storedName) {
+      const parsedValue = JSON.parse(storedName)
+      if (parsedValue.filter((item: any) => item.name === values.name).length > 0) {
+        alert('USER ALREADY APPEARED THE EXAM!')
+      } else {
+        setFieldValue('validUser', true)
+        setFieldValue('step', 0)
+        setTimerPerPage(30)
+        setTimeLeft(QuizQues.length * 30)
+      }
+    } else {
+      setFieldValue('validUser', true)
+      setFieldValue('step', 0)
+      setTimerPerPage(30)
+      setTimeLeft(QuizQues.length * 30)
+    }
   }
 
   return (
     <Box sx={{ width: '100%' }}>
       <form>
         {
-          values.validUser ?
+          values.validUser || values.step > 0 ?
             <>
               <h3> Welcome {values.name}! </h3>
-              <h3> TIME LEFT IS {(mins > 9) ? mins : `0${mins}`} : {(seconds > 9) ? (seconds !== 60 && seconds) : `0${seconds}`} ! </h3>
+              <h3> TOTAL TEST TIME {(mins > 9) ? mins : `0${mins}`} : {(seconds > 9) ? (seconds !== 60 && seconds) : `0${seconds}`} ! </h3>
+              <h3> TIME TO SOLVE THE QUE : {(timePerPage > 9) ? (timePerPage) : `0${timePerPage}`} seconds </h3>
               <div className='stepsLabel'>
                 {QuizQues.map((ques, index) => (
                   < div >
@@ -165,64 +202,64 @@ export default function App(props: formikValues) {
               {
                 values.step === QuizQues.length ? (
                   <>
-                    <Typography sx={{ mt: 2, mb: 1 }}>
-                      <Result />
-                    </Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
                       <Box sx={{ flex: '1 1 auto' }} />
                       <Button onClick={handleReset}>Reset</Button>
                     </Box>
+                    <Typography sx={{ mt: 2, mb: 1 }}>
+                      <Result />
+                    </Typography>
                   </>
                 ) : (
                   <>
                     {QuizQues.map((ques, index) => (
                       index === values.step &&
                       <div className='mainForm' key={index}> {ques.question}
-                        {ques.options.map((queOption) => (
-                          <>
-                            <br /><label>
-                              <input type='radio' name={`${index + 1}`} value={queOption} onChange={(e) => handleChoice(e)} defaultChecked={values.answers?.filter((item: any) => (item?.ans === queOption)).length > 0} />
-                              {queOption} </label></>
+                        {ques.options.map((queOption, i) => (
+                          <div key={i}>
+                            <>
+                              <br />
+                              {queOption.A !== undefined &&
+                                <label>
+                                  <input type='radio' name={`${index + 1}`} value='A' onChange={(e) => handleChoice(e)} defaultChecked={values?.answers?.filter((item: any) => ((Number(item?.que) === index + 1) && (item?.ans === 'A'))).length > 0} />
+                                  {queOption?.A} </label>
+                              }
+                              {queOption.B !== undefined &&
+                                <label>
+                                  <input type='radio' name={`${index + 1}`} value='B' onChange={(e) => handleChoice(e)} defaultChecked={values?.answers?.filter((item: any) => ((Number(item?.que) === index + 1) && (item?.ans === 'B'))).length > 0} />
+                                  {queOption?.B} </label>}
+                              {queOption.C !== undefined &&
+                                <label>
+                                  <input type='radio' name={`${index + 1}`} value='C' onChange={(e) => handleChoice(e)} defaultChecked={values?.answers?.filter((item: any) => ((Number(item?.que) === index + 1) && (item?.ans === 'C'))).length > 0} />
+                                  {queOption?.C} </label>}
+                              {queOption.D !== undefined &&
+                                <label>
+                                  <input type='radio' name={`${index + 1}`} value='D' onChange={(e) => handleChoice(e)} defaultChecked={values?.answers?.filter((item: any) => ((Number(item?.que) === index + 1) && (item?.ans === 'D'))).length > 0} />
+                                  {queOption?.D} </label>
+                              }
+                            </>
+                          </div>
                         ))}
                       </div>
                     ))}
                     <br />
                     <Typography sx={{ mt: 2, mb: 1 }}>Step {values.step + 1}</Typography>
                     <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-                      <MobileStepper
-                        variant="progress" steps={QuizQues.length} position="static" activeStep={values.step} sx={{ maxWidth: 400, flexGrow: 1 }}
-                        nextButton={
-                          <Button size="small" onClick={handleNext} disabled={values.answers.filter((check: any) => Number(check.que) === Number(values.step + 1)).length === 0}>
-                            {values.step === QuizQues.length - 1 ? 'FINISH' : 'NEXT'}
-                            {theme.direction === 'rtl' ? (
-                              <KeyboardArrowLeft />
-                            ) : (
-                              <KeyboardArrowRight />
-                            )}
-                          </Button>
-                        }
-                        backButton={
-                          <Button size="small" onClick={handleBack} disabled={values.step === 0}>
-                            {theme.direction === 'rtl' ? (
-                              <KeyboardArrowRight />
-                            ) : (
-                              <KeyboardArrowLeft />
-                            )}
-                            BACK
-                          </Button>
-                        }
-                      />
+                      <Button size="small" onClick={handleNext} disabled={values.answers.filter((check: any) => Number(check.que) === Number(values.step + 1)).length === 0}>
+                        {values.step === QuizQues.length - 1 ? 'FINISH' : 'NEXT'}
+                        <KeyboardArrowRight />
+                      </Button>
                     </Box>
                   </>
                 )
               }
             </>
             :
-            <div>
-              <label> ENTER YOUR USERNAME :
-                <input type='text' name='name' value={values.name} onChange={handleChange} />
-              </label>
-              <button type='button' onClick={() => handlePage()}> NEXT </button>
+            <div className='mainDiv'>
+              <label className='labelName'> ENTER YOUR USERNAME :</label>
+              <br /><br /><input type='text' className='inputField' name='name' value={values.name} onChange={handleChange} />
+              <br /><br />
+              <button className='button-86' type='button' onClick={() => { handleName() }}> NEXT </button>
             </div>
         }
       </form>
