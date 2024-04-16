@@ -1,11 +1,29 @@
+import { useEffect } from 'react'
 import QuizQues from './QuizQues'
 
 function Result() {
-    var userInputs = [], score = 0
+    var userInputs = [], score = 0, minsLeft = 0, secLeft = 0
+    const existingData = localStorage.getItem('all results') || []
+    useEffect(() => {
+        if (existingData) {
+            const parsedValue = JSON.parse(existingData)
+            var tempValue = parsedValue
+            tempValue[tempValue.length - 1].score = score
+            localStorage.setItem('all results', JSON.stringify(tempValue))
+        }
+    }, [score])
+
     const storedValue = localStorage.getItem('currentData')
     if (storedValue !== null) {
         const parsedData = JSON.parse(storedValue)
         userInputs = parsedData?.answers || []
+    }
+    if (existingData) {
+        const parsedValue = JSON.parse(existingData)
+        var tempArr = parsedValue[parsedValue.length - 1]
+        const timeLeft = tempArr.time
+        minsLeft = Math.floor(timeLeft / 60)
+        secLeft = timeLeft % 60
     }
     userInputs.map((quizItem) => (
         QuizQues.filter((item, index) => (
@@ -16,6 +34,7 @@ function Result() {
 
     return (
         <>
+            <h4> <u> TIME LEFT : '0{minsLeft}:{secLeft > 9 ? secLeft : `0${secLeft}`}' </u> </h4>
             <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs?.length} / {QuizQues.length} </h2>
             <h3> QUES SKIPPED : {QuizQues.length - userInputs?.length} </h3>
             <h3> <u> YOUR OVERALL RESULT IS : {score} MARKS </u> </h3>
