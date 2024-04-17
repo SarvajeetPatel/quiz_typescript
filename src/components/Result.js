@@ -11,6 +11,7 @@ function Result() {
             tempValue[tempValue.length - 1].score = score
             localStorage.setItem('all results', JSON.stringify(tempValue))
         }
+        // eslint-disable-next-line
     }, [score])
 
     const storedValue = localStorage.getItem('currentData')

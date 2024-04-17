@@ -167,6 +167,18 @@
   transform: translate(0, 5%);
 }
 
+.currView {
+  display: flex;
+  justify-content: space-around;
+}
+
+.innerDiv{
+  display: flex;
+  /* justify-content: center; */
+  margin-top: 50px;
+  flex-direction: column;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
