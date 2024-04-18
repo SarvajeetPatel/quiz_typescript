@@ -246,6 +246,13 @@ td {
   text-align: center;
 }
 
+.container {
+  margin: 1rem;
+}
+
+.items {
+  margin-bottom: 1rem;
+}
 
 @keyframes App-logo-spin {
   from {

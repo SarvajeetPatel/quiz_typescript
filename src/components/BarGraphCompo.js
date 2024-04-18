@@ -24,7 +24,7 @@ export default function BarGraphCompo() {
         })
         setStatistics(newStat)
     }, [])
-    console.log(statistics)
+
     return (
         <BarChart
             dataset={statistics}
