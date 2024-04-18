@@ -10,18 +10,23 @@ export default function BasicLineChart() {
     useEffect(() => {
         var statistics = [], lineStatistics = [];
         if (userChoice === 'Monthly') {
-            storedValue.map((userData) => {
+            const sortedList = storedValue.sort((a, b) => new Date(a.testDate.split('/')[2], a.testDate.split('/')[1], a.testDate.split('/')[0]) > new Date(b.testDate.split('/')[2], b.testDate.split('/')[1], b.testDate.split('/')[0]))
+            sortedList.map((userData) => {
                 const dates = userData.testDate.split('/')
-                var givenDate = dates[0], count = 0;
+                var givenDate = dates[0], givenMonth = dates[1], givenYear = dates[2], count = 0, currMonth = new Date().getMonth(), currYear = new Date().getFullYear()
                 // eslint-disable-next-line
-                const checkExists = statistics?.filter(item => item == givenDate)
-                if (checkExists.length > 0) {
-                    count = lineStatistics[lineStatistics.length - 1] + 1
-                    lineStatistics[lineStatistics.length - 1] = count
-                } else {
-                    count++
-                    statistics.push(Number(givenDate))
-                    lineStatistics.push(count)
+                if ((givenYear == currYear) && ((givenMonth - 1) === currMonth)) {
+                    // eslint-disable-next-line
+                    const checkExists = statistics?.filter(item => item == givenDate)
+                    console.log(checkExists)
+                    if (checkExists.length > 0) {
+                        count = lineStatistics[lineStatistics.length - 1] + 1
+                        lineStatistics[lineStatistics.length - 1] = count
+                    } else {
+                        count++
+                        statistics.push(Number(givenDate))
+                        lineStatistics.push(count)
+                    }
                 }
                 return 0;
             })
@@ -33,12 +38,14 @@ export default function BasicLineChart() {
                 statistics.push(30)
                 lineStatistics.push(0)
             }
+            console.log(statistics, lineStatistics)
             setDataToDisplay(statistics)
             setAxisNumbers(lineStatistics)
         } else if (userChoice === 'Today') {
             var tempArr = [], count = 0
             // eslint-disable-next-line
             storedValue.map((userData) => {
+                console.log(userData.testDate, new Date().toLocaleDateString(), userData.testDate === new Date().toLocaleDateString())
                 // eslint-disable-next-line
                 if (userData.testDate == new Date().toLocaleDateString()) {
                     if (tempArr.length > 0) {
@@ -54,6 +61,8 @@ export default function BasicLineChart() {
             setDataToDisplay([Number(new Date().toLocaleDateString().split('/', 1)[0])])
         } else if (userChoice === 'Weekly') {
             var curr = new Date();
+            var toMonth = curr.getMonth()
+            var toYear = curr.getFullYear()
             var first = curr.getDate() - curr.getDay();
             var last = first + 6;
             var updateData = [0, 0, 0, 0, 0, 0, 0], counter = 0;
@@ -62,7 +71,7 @@ export default function BasicLineChart() {
                 const givenDate = tempDate[0]
                 const givenMonth = tempDate[1]
                 const givenYear = tempDate[2]
-                if (givenDate >= first && givenDate <= last) {
+                if ((givenDate >= first) && (givenDate <= last) && ((givenMonth - 1) == toMonth) && (givenYear == toYear)) {
                     const date = new Date(givenYear, givenMonth - 1, givenDate)
                     counter = updateData[date.getDay()] + 1
                     updateData.splice(date.getDay(), 1, counter)

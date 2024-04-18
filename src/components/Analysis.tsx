@@ -46,6 +46,9 @@ function Analysis() {
                     </div>
                 </div>
                 <div>
+                    <div style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
+                        <button className="button-86" onClick={() => navigate('/add-dummy-data')}> ADD DUMMY DATA </button>
+                    </div>
                     <div className='graphsPos'>
                         <div> <h3> The below bar graph shows the count of </h3>
                             <h3> students as per their answers per question! </h3></div>

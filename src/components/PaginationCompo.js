@@ -6,7 +6,6 @@ export default function PaginationCompo() {
     const { page, setPage, rowsPerPage, setRowsPerPage, storedValue } = useContext(NoteContext)
 
     const handleChangePage = (event, newPage) => {
-        console.log(newPage)
         setPage(newPage);
     };
 
