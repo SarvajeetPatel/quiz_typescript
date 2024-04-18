@@ -11,7 +11,8 @@ type formikValues = {
     step?: number,
     answers?: [],
     validUser?: boolean,
-    score?: number
+    score?: number,
+    testDate?: string
 }
 
 export default function QuizForm(props: formikValues) {
@@ -27,7 +28,8 @@ export default function QuizForm(props: formikValues) {
             step: props.step || 0,
             answers: props.answers || [],
             validUser: props.validUser || false,
-            score: props.score || 0
+            score: props.score || 0,
+            testDate: props.testDate || new Date()
         },
         onSubmit: (values) => {
             console.log(values)
@@ -43,6 +45,7 @@ export default function QuizForm(props: formikValues) {
             setFieldValue('score', parsedData.score || 0)
             setFieldValue('name', parsedData.name || '')
             setFieldValue('answers', parsedData.answers || [])
+            setFieldValue('testDate', parsedData.testDate || new Date())
             setTimeLeft(parseInt(parsedData.time, 10))
             setTimerPerPage(parseInt(parsedData.timePerPage, 10))
         }
@@ -89,7 +92,7 @@ export default function QuizForm(props: formikValues) {
             if (timeLeft === 0) {
                 setFieldValue('step', QuizQues.length)
             }
-            const tempData = { name: values.name, score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
+            const tempData = { name: values.name, testDate: values.testDate.toLocaleString().split(',', 1)[0], score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
             localStorage.setItem('currentData', JSON.stringify(tempData))
         }
         // eslint-disable-next-line
@@ -103,14 +106,14 @@ export default function QuizForm(props: formikValues) {
             } else if (values.step === QuizQues.length) {
                 setTimerPerPage(0)
             }
-            const tempData = { name: values.name, score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
+            const tempData = { name: values.name, testDate: values.testDate.toLocaleString().split(',', 1)[0], score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft.toString(), answers: values.answers }
             localStorage.setItem('currentData', JSON.stringify(tempData))
         }
         // eslint-disable-next-line
     }, [timePerPage])
 
     const handleNext = () => {
-        const tempData = { name: values.name, score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step + 1, time: timeLeft, answers: values.answers }
+        const tempData = { name: values.name, testDate: values.testDate.toLocaleString().split(',', 1)[0], score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step + 1, time: timeLeft, answers: values.answers }
         localStorage.setItem('currentData', JSON.stringify(tempData))
 
         if (values.step < QuizQues.length - 1) {
@@ -153,7 +156,7 @@ export default function QuizForm(props: formikValues) {
         } else {
             updatedAnswers.push({ que: name, ans: value });
         }
-        localStorage.setItem('currentData', JSON.stringify({ name: values.name, score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft, answers: updatedAnswers }));
+        localStorage.setItem('currentData', JSON.stringify({ name: values.name, testDate: values.testDate.toLocaleString().split(',', 1)[0], score: values.score, timePerPage: timePerPage, validUser: values.validUser, step: values.step, time: timeLeft, answers: updatedAnswers }));
         setFieldValue('answers', updatedAnswers)
     };
 

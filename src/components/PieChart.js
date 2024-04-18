@@ -41,6 +41,7 @@ export default function BasicPie() {
             ]}
             width={400}
             height={200}
+            margin={{ left: -50 }}
         />
     );
 }

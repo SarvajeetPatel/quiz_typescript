@@ -1,3 +1,4 @@
+import AllResults from './components/AllResults'
 import Analysis from './components/Analysis'
 import QuizForm from './components/QuizForm'
 import { Routes, Route } from 'react-router-dom'
@@ -7,6 +8,7 @@ function App() {
     <Routes>
       <Route path='/' element={<QuizForm />} />
       <Route path='/analysis' element={<Analysis />} />
+      <Route path='/allResults' element={<AllResults />} />
     </Routes>
   )
 }
