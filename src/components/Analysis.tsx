@@ -18,7 +18,7 @@ function Analysis() {
     }
 
     const handleAllResults = () => {
-        navigate('/allResults')
+        navigate('/view-all-results')
     }
 
     return (

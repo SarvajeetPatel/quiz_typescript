@@ -11,7 +11,7 @@ function App() {
       <Route path='/' element={<QuizForm />} />
       <Route path='/analysis' element={<Analysis />} />
       <Route path='/allResults' element={<AllResults />} />
-      <Route path='/newResults' element={<ResultDataTable />} />
+      <Route path='/view-all-results' element={<ResultDataTable />} />
       <Route path='/add-dummy-data' element={<AddData />} />
     </Routes>
   )
