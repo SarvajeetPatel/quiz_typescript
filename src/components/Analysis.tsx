@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import BarGraphCompo from "./BarGraphCompo"
 import PieChart from "./PieChart"
 import LineGraph from "./LineGraph"
+import Cookies from "js-cookie";
 
 function Analysis() {
     var parsedData: any = [], navigate = useNavigate();
@@ -13,7 +14,7 @@ function Analysis() {
 
     const handleClick = () => {
         navigate('/')
-        localStorage.removeItem('currentData')
+        Cookies.remove('currentData')
     }
 
     const handleAllResults = () => {

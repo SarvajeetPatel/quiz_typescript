@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import QuizQues from './QuizQues'
+import Cookies from 'js-cookie'
 
 function Result() {
     var userInputs = [], score = 0, minsLeft = 0, secLeft = 0
@@ -14,7 +15,7 @@ function Result() {
         // eslint-disable-next-line
     }, [score])
 
-    const storedValue = localStorage.getItem('currentData')
+    const storedValue = Cookies.get('currentData')
     if (storedValue !== null) {
         const parsedData = JSON.parse(storedValue)
         userInputs = parsedData?.answers || []

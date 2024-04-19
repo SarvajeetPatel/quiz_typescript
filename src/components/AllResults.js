@@ -7,6 +7,7 @@ import quiz from './QuizQues';
 import { useNavigate } from 'react-router-dom';
 import PaginationCompo from './PaginationCompo';
 import NoteContext from '../context/NoteContext';
+import Cookies from 'js-cookie';
 
 const style = {
     position: 'absolute',
@@ -34,7 +35,7 @@ function AllResults() {
     }
 
     const handleClick = () => {
-        localStorage.removeItem('currentData')
+        Cookies.remove('currentData')
         navigate('/')
     }
     return (

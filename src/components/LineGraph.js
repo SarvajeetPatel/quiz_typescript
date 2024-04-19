@@ -68,6 +68,7 @@ export default function BasicLineChart() {
                 const givenDate = tempDate[0]
                 const givenMonth = tempDate[1]
                 const givenYear = tempDate[2]
+                // eslint-disable-next-line
                 if ((givenDate >= first) && (givenDate <= last) && ((givenMonth - 1) == toMonth) && (givenYear == toYear)) {
                     const date = new Date(givenYear, givenMonth - 1, givenDate)
                     counter = updateData[date.getDay()] + 1
