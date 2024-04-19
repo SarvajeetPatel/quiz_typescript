@@ -18,7 +18,6 @@ export default function BasicLineChart() {
                 if ((givenYear == currYear) && ((givenMonth - 1) === currMonth)) {
                     // eslint-disable-next-line
                     const checkExists = statistics?.filter(item => item == givenDate)
-                    console.log(checkExists)
                     if (checkExists.length > 0) {
                         count = lineStatistics[lineStatistics.length - 1] + 1
                         lineStatistics[lineStatistics.length - 1] = count
@@ -38,14 +37,12 @@ export default function BasicLineChart() {
                 statistics.push(30)
                 lineStatistics.push(0)
             }
-            console.log(statistics, lineStatistics)
             setDataToDisplay(statistics)
             setAxisNumbers(lineStatistics)
         } else if (userChoice === 'Today') {
             var tempArr = [], count = 0
             // eslint-disable-next-line
             storedValue.map((userData) => {
-                console.log(userData.testDate, new Date().toLocaleDateString(), userData.testDate === new Date().toLocaleDateString())
                 // eslint-disable-next-line
                 if (userData.testDate == new Date().toLocaleDateString()) {
                     if (tempArr.length > 0) {
