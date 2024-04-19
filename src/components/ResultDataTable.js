@@ -1,24 +1,26 @@
 import Checkbox from '@material-ui/core/Checkbox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
-import { useEffect, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import styled, { keyframes } from 'styled-components';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import quiz from './QuizQues';
-import DummyData from '../helpers/DummyData';
+import differenceBy from 'lodash/differenceBy'
 
 const ResultDataTable = () => {
     const storedValue = JSON.parse(localStorage.getItem('all results')) || []
-    const [pending, setPending] = useState(true)
     const [open, setOpen] = useState(false)
     const [userIndex, setUserIndex] = useState(0)
-    const [rows, setRows] = useState([])
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [toggleCleared, setToggleCleared] = useState(false);
+    const [data, setData] = useState(storedValue);
+
     const handleOpen = (index) => {
+        const tempIndex = storedValue.findIndex(item => item.name === index)
         setOpen(true)
-        setUserIndex(index)
+        setUserIndex(tempIndex)
     }
 
     const style = {
@@ -53,8 +55,8 @@ const ResultDataTable = () => {
             name: 'View',
             sortable: true,
             cell: row => (
-                <div key={`variantlist2-${row.id}`}  >
-                    <Button onClick={() => handleOpen(row.id)}> DETAILED RESULT </Button>
+                <div key={`variantlist2-${row.idx}`}  >
+                    <Button onClick={() => handleOpen(row.name)}> DETAILED RESULT </Button>
                     <Modal
                         open={open}
                         onClose={() => setOpen(false)}
@@ -128,55 +130,35 @@ const ResultDataTable = () => {
         selectAllRowsItemText: "ALL"
     }
 
-    const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }`;
-
-    const Spinner = styled.div`
-	margin: 16px;
-	animation: ${rotate360} 1s linear infinite;
-	transform: translateZ(0);
-	border-top: 2px solid grey;
-	border-right: 2px solid grey;
-	border-bottom: 2px solid grey;
-	border-left: 4px solid black;
-	background: transparent;
-	width: 80px;
-	height: 80px;
-	border-radius: 50%`;
-
-    const CustomLoader = () => (
-        <div style={{ padding: '24px' }}>
-            <Spinner />
-        </div>
-    )
-
-    useEffect(() => {
-        const timeout = setTimeout(() => {
-            setRows(DummyData);
-            setPending(false);
-        }, 2000);
-        return () => clearTimeout(timeout);
+    const handleRowSelected = useCallback(state => {
+        setSelectedRows(state.selectedRows);
     }, []);
+
+    const contextActions = useMemo(() => {
+        const handleDelete = () => {
+            // eslint-disable-next-line no-alert
+            if (window.confirm(`Are you sure you want to delete:\r ${selectedRows.map(r => r.name)}?`)) {
+                setToggleCleared(!toggleCleared)
+                setData(differenceBy(data, selectedRows, 'name'));
+            }
+        };
+        return <Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }} icon> Delete </Button>;
+    }, [data, selectedRows, toggleCleared])
 
     return (
         <DataTable
             title="Results"
             columns={columns}
-            data={rows}
+            data={data}
             selectableRows
             selectableRowsComponent={Checkbox}
             selectableRowsComponentProps={{ inkDisabled: true }}
+            contextActions={contextActions}
+            onSelectedRowsChange={handleRowSelected}
+            clearSelectedRows={toggleCleared}
             pagination
             paginationComponentOptions={paginationComponentOptions}
             sortIcon={<ArrowDownward />}
-            progressPending={pending}
-            progressComponent={<CustomLoader />}
         />
     )
 }
