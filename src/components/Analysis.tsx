@@ -23,18 +23,27 @@ function Analysis() {
 
     return (
         <>
-            <div className="currView">
-                <div>
-                    <div className='topList'>
-                        <h3><u> List of Top - 5 Students </u></h3>
-                        {parsedData?.map((item: any, index: number) => (
-                            index < 5 &&
-                            <div className="innerDiv">
-                                <div> <b> {index + 1}. Name : {item.name} </b></div>
-                                <div> Date of Test : {(item?.testDate)} </div>
-                                <div> Score : {item.score} </div> <br /> <br />
-                            </div>
-                        ))}
+            <div>
+                <div className="analysis-heading">
+                    <h2> Analysis of the tests given by the students so far! </h2> </div>
+                <div className="currView">
+                    <div className="leaderboard">
+                        <div className='leaderboard__title'>
+                            List of Top - 5 Students </div>
+                        <main className="leaderboard__profiles">
+                            {parsedData?.map((item: any, index: number) => (
+                                index < 5 &&
+                                <article className="leaderboard__profile">
+                                    <img src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1713657600&semt=ais"
+                                        className="leaderboard__picture" alt="close" />
+                                    <span className="leaderboard__name"> <b> {index + 1}. {item.name.split(' ')[0]} </b></span>
+                                    <span className="leaderboard__value"> {(item?.testDate)}</span>
+                                    <span className="leaderboard__value"> {item.score} </span>
+                                    {/* <br /> */}
+                                    {/* <br /> */}
+                                </article>
+                            ))}
+                        </main>
                         <br /><br />
                         <div className="switchButtons">
                             <button className="button-86" onClick={handleClick}> GIVE TEST </button>
@@ -46,10 +55,7 @@ function Analysis() {
                         <LineGraph />
                     </div>
                 </div>
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
-                        <button className="button-86" onClick={() => navigate('/add-dummy-data')}> ADD DUMMY DATA </button>
-                    </div>
+                <div className="currView">
                     <div className='graphsPos'>
                         <div> <h3> The below bar graph shows the count of </h3>
                             <h3> students as per their answers per question! </h3></div>
@@ -59,6 +65,9 @@ function Analysis() {
                         <h3> The below pie chart shows students score percentage! </h3>
                         <PieChart />
                     </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'end', marginTop: '5px' }}>
+                    <button className="button-86" onClick={() => navigate('/add-dummy-data')}> ADD DUMMY DATA </button>
                 </div>
             </div>
         </>

@@ -26,15 +26,17 @@ export default function BarGraphCompo() {
     }, [])
 
     return (
-        <BarChart
-            dataset={statistics}
-            xAxis={[{ scaleType: 'band', dataKey: 'index', label: 'question numbers' }]}
-            series={[
-                { dataKey: 'correct', label: 'no of students who answered Correctly', valueFormatter, color: '#00C49F' },
-                { dataKey: 'wrong', label: 'no of students who answered ', valueFormatter, color: '#ad4e5e' },
-            ]}
-            margin={{ top: 80 }}
-            {...chartSetting}
-        />
+        <div className='data-table'>
+            <BarChart
+                dataset={statistics}
+                xAxis={[{ scaleType: 'band', dataKey: 'index', label: 'question numbers' }]}
+                series={[
+                    { dataKey: 'correct', label: 'no of students who answered Correctly', valueFormatter, color: '#00C49F' },
+                    { dataKey: 'wrong', label: 'no of students who answered ', valueFormatter, color: '#ad4e5e' },
+                ]}
+                margin={{ top: 80 }}
+                {...chartSetting}
+            />
+        </div>
     );
 }

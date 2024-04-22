@@ -33,15 +33,17 @@ export default function BasicPie() {
     }, [])
 
     return (
-        <PieChart
-            series={[
-                {
-                    data: finalData
-                },
-            ]}
-            width={400}
-            height={200}
-            margin={{ left: -50 }}
-        />
+        <div className='data-table'>
+            <PieChart
+                series={[
+                    {
+                        data: finalData
+                    },
+                ]}
+                width={400}
+                height={200}
+                margin={{ left: -50 }}
+            />
+        </div>
     );
 }

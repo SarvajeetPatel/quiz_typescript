@@ -36,66 +36,88 @@ function Result() {
 
     return (
         <>
-            <h4> <u> TIME LEFT : '0{minsLeft}:{secLeft > 9 ? secLeft : `0${secLeft}`}' </u> </h4>
-            <h2> NO. OF QUESTIONS ATTEMPTED : {userInputs?.length} / {QuizQues.length} </h2>
-            <h3> QUES SKIPPED : {QuizQues.length - userInputs?.length} </h3>
-            <h3> <u> YOUR OVERALL RESULT IS : {score} MARKS </u> </h3>
-            <h3> INCORRECTLY ANSWERED ARE : {userInputs?.length - score} </h3>
-
-            {
-                QuizQues.map((item, index) =>
-                    (userInputs.filter((quizy) => Number(quizy.que) === index + 1).length > 0) ?
-                        userInputs.filter((quizer) => Number(quizer.que) === index + 1).map((quizItem) =>
-                            <div className='mainForm'>
+            <article>
+                <h1> YOUR TEST DETAILS : </h1>
+                <dl>
+                    <div>
+                        <dt> <u> TIME </u> </dt>
+                        <dd>The time left for the test is '0{minsLeft}:{secLeft > 9 ? secLeft : `0${secLeft}`}'</dd>
+                    </div>
+                    <div>
+                        <dt> <u> ATTEMPTED </u> </dt>
+                        <dd>Number of questions you've attempted are : {userInputs?.length} / {QuizQues.length}</dd>
+                    </div>
+                    <div>
+                        <dt> <u> SKIPPED </u> </dt>
+                        <dd>You've skipped {QuizQues.length - userInputs?.length} questions</dd>
+                    </div>
+                    <div>
+                        <dt> <u> INCORRECT </u> </dt>
+                        <dd>Number of incorrectly answered questions are : {userInputs?.length - score}</dd>
+                    </div>
+                    <div>
+                        <dt> <u> OVERALL RESULT </u> </dt>
+                        <dd>Your calculated Overall Result is {score} MARKS</dd>
+                    </div>
+                </dl>
+            </article>
+            <div className='question-div'>
+                <div className='ques-heading'> <u> LIST OF QUESTIONS : </u> </div >
+                {
+                    QuizQues.map((item, index) =>
+                        (userInputs.filter((quizy) => Number(quizy.que) === index + 1).length > 0) ?
+                            userInputs.filter((quizer) => Number(quizer.que) === index + 1).map((quizItem) =>
+                                <div className='mainResult'>
+                                    <h4>{index + 1} {item?.question} </h4>
+                                    {item.options.map((opt) => (
+                                        <>
+                                            {(quizItem.ans === item.correctAnswer && 'A' === item.correctAnswer) ?
+                                                <div className='correctAnswer'> {opt.A} </div> :
+                                                (quizItem.ans === 'A' && quizItem.ans !== item.correctAnswer) ?
+                                                    <div className='wrongAnswer' > {opt.A} </div> :
+                                                    ('A' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
+                                                        <div className='correctAnswer' > {opt.A} </div> : <div> {opt.A} </div >
+                                            }
+                                            {(quizItem.ans === item.correctAnswer && 'B' === item.correctAnswer) ?
+                                                <div className='correctAnswer' > {opt.B} </div> :
+                                                ('B' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
+                                                    <div className='wrongAnswer' > {opt.B} </div> :
+                                                    ('B' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
+                                                        <div className='correctAnswer' > {opt.B} </div> : <div> {opt.B} </div >
+                                            }
+                                            {(quizItem.ans === item.correctAnswer && 'C' === item.correctAnswer) ?
+                                                <div className='correctAnswer' > {opt.C} </div> :
+                                                ('C' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
+                                                    <div className='wrongAnswer' > {opt.C} </div> :
+                                                    ('C' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
+                                                        <div className='correctAnswer' > {opt.C} </div> : <div> {opt.C} </div >
+                                            }
+                                            {(quizItem.ans === item.correctAnswer && 'D' === item.correctAnswer) ?
+                                                <div className='correctAnswer' > {opt.D} </div> :
+                                                ('D' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
+                                                    <div className='wrongAnswer' > {opt.D} </div> :
+                                                    ('D' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
+                                                        <div className='correctAnswer' > {opt.D} </div> : <div> {opt.D} </div >
+                                            }
+                                        </>
+                                    ))}
+                                </div >) :
+                            <div className='mainResult' >
                                 <h4>{index + 1} {item?.question} </h4>
-                                {item.options.map((opt) => (
-                                    <>
-                                        {(quizItem.ans === item.correctAnswer && 'A' === item.correctAnswer) ?
-                                            <div className='correctAnswer'> {opt.A} </div> :
-                                            (quizItem.ans === 'A' && quizItem.ans !== item.correctAnswer) ?
-                                                <div className='wrongAnswer' > {opt.A} </div> :
-                                                ('A' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
-                                                    <div className='correctAnswer' > {opt.A} </div> : <div> {opt.A} </div >
-                                        }
-                                        {(quizItem.ans === item.correctAnswer && 'B' === item.correctAnswer) ?
-                                            <div className='correctAnswer' > {opt.B} </div> :
-                                            ('B' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
-                                                <div className='wrongAnswer' > {opt.B} </div> :
-                                                ('B' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
-                                                    <div className='correctAnswer' > {opt.B} </div> : <div> {opt.B} </div >
-                                        }
-                                        {(quizItem.ans === item.correctAnswer && 'C' === item.correctAnswer) ?
-                                            <div className='correctAnswer' > {opt.C} </div> :
-                                            ('C' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
-                                                <div className='wrongAnswer' > {opt.C} </div> :
-                                                ('C' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
-                                                    <div className='correctAnswer' > {opt.C} </div> : <div> {opt.C} </div >
-                                        }
-                                        {(quizItem.ans === item.correctAnswer && 'D' === item.correctAnswer) ?
-                                            <div className='correctAnswer' > {opt.D} </div> :
-                                            ('D' === quizItem.ans && quizItem.ans !== item.correctAnswer) ?
-                                                <div className='wrongAnswer' > {opt.D} </div> :
-                                                ('D' === item.correctAnswer && quizItem.ans !== item.correctAnswer) ?
-                                                    <div className='correctAnswer' > {opt.D} </div> : <div> {opt.D} </div >
-                                        }
-                                    </>
-                                ))}
-                            </div >) :
-                        <div className='mainForm' >
-                            <h4>{index + 1} {item?.question} </h4>
-                            {
-                                item.options.map((opt) =>
-                                    <>
-                                        <div className={item.correctAnswer === 'A' ? 'leftOut' : ''} > {opt.A} </div>
-                                        < div className={item.correctAnswer === 'B' ? 'leftOut' : ''} > {opt.B} </div>
-                                        < div className={item.correctAnswer === 'C' ? 'leftOut' : ''} > {opt.C} </div>
-                                        < div className={item.correctAnswer === 'D' ? 'leftOut' : ''} > {opt.D} </div>
-                                    </>
-                                )
-                            }
-                        </div>
-                )
-            }
+                                {
+                                    item.options.map((opt) =>
+                                        <>
+                                            <div className={item.correctAnswer === 'A' ? 'leftOut' : ''} > {opt.A} </div>
+                                            < div className={item.correctAnswer === 'B' ? 'leftOut' : ''} > {opt.B} </div>
+                                            < div className={item.correctAnswer === 'C' ? 'leftOut' : ''} > {opt.C} </div>
+                                            < div className={item.correctAnswer === 'D' ? 'leftOut' : ''} > {opt.D} </div>
+                                        </>
+                                    )
+                                }
+                            </div>
+                    )
+                }
+            </div>
         </>
     )
 }

@@ -79,37 +79,43 @@ export default function BasicLineChart() {
             setAxisNumbers(updateData)
             setDataToDisplay(['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'])
         } else {
-            var calcYear = new Date().getFullYear(), tests = [], totalCount = 0;
+            var tests = [], yearList = [];
             storedValue.map((userData) => {
                 const thisYear = userData.testDate.split('/')[2]
-                if (Number(thisYear) === calcYear) {
-                    totalCount++
-                    if (tests.length > 0) {
-                        tests.splice(0, 1, totalCount)
-                    } else {
-                        tests.push(totalCount)
-                    }
+                if (yearList.includes(thisYear)) {
+                    const yearIndex = yearList.indexOf(thisYear)
+                    const tempCount = tests[yearIndex] + 1
+                    tests[yearIndex] = tempCount
+                } else {
+                    yearList.push(thisYear)
+                    tests.push(1)
                 }
                 return true
             })
+            tests.push(0)
+            yearList.push((Number(yearList[yearList.length - 1]) + 1).toString())
+            tests.splice(0, 0, 0)
+            yearList.splice(0, 0, (Number(yearList[0]) - 1).toString())
             setAxisNumbers(tests)
-            setDataToDisplay([calcYear])
+            setDataToDisplay(yearList)
         }
         // eslint-disable-next-line
     }, [userChoice])
 
     return (
         <>
-            <LineChart
-                xAxis={[{ scaleType: 'point', data: dataToDisplay, label: ((userChoice === 'Monthly' && 'dates') || (userChoice === 'Weekly' && 'days')) }]}
-                series={[
-                    {
-                        data: axisNumbers,
-                    },
-                ]}
-                width={500}
-                height={300}
-            />
+            <div className='data-table'>
+                <LineChart
+                    xAxis={[{ scaleType: 'point', data: dataToDisplay, label: ((userChoice === 'Monthly' && 'dates') || (userChoice === 'Weekly' && 'days')) }]}
+                    series={[
+                        {
+                            data: axisNumbers,
+                        },
+                    ]}
+                    width={500}
+                    height={300}
+                />
+            </div>
             <h4> You can select time period of your choice! </h4>
             <select style={{ width: '80px' }} defaultValue={userChoice} onChange={(e) => setUserChoice(e.target.value)}>
                 <option value='Monthly' > Monthly </option>

@@ -53,7 +53,6 @@ const ResultDataTable = () => {
         },
         {
             name: 'View',
-            sortable: true,
             cell: row => (
                 <div key={`variantlist2-${row.idx}`}  >
                     <Button onClick={() => handleOpen(row.name)}> DETAILED RESULT </Button>
@@ -142,24 +141,59 @@ const ResultDataTable = () => {
                 setData(differenceBy(data, selectedRows, 'name'));
             }
         };
-        return <Button key="delete" onClick={handleDelete} style={{ backgroundColor: 'red' }} icon> Delete </Button>;
+        return <button key="delete" onClick={handleDelete} className='deleteButton' icon> DELETE </button>;
     }, [data, selectedRows, toggleCleared])
 
+    const customStyles = {
+        rows: {
+            style: {
+                minHeight: '72px',
+                backgroundColor: 'aliceblue'
+            },
+        },
+        headCells: {
+            style: {
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                fontSize: '25px',
+                fontWeight: '700',
+                fontFamily: 'Courier New, Courier, monospace',
+                backgroundColor: 'rgb(163, 199, 231)'
+            },
+        },
+        cells: {
+            style: {
+                fontFamily: 'Courier New, Courier, monospace',
+                paddingLeft: '8px',
+                paddingRight: '8px',
+                color: 'darkblue',
+                fontWeight: '600',
+                fontSize: '20px',
+            }
+        }
+    };
+
     return (
-        <DataTable
-            title="Results"
-            columns={columns}
-            data={data}
-            selectableRows
-            selectableRowsComponent={Checkbox}
-            selectableRowsComponentProps={{ inkDisabled: true }}
-            contextActions={contextActions}
-            onSelectedRowsChange={handleRowSelected}
-            clearSelectedRows={toggleCleared}
-            pagination
-            paginationComponentOptions={paginationComponentOptions}
-            sortIcon={<ArrowDownward />}
-        />
+        <>
+            <div className="analysis-heading">
+                <h2> RESULTS OF ALL CANDIDATES! </h2>
+            </div>
+            <DataTable
+                title=" "
+                columns={columns}
+                data={data}
+                selectableRows
+                selectableRowsComponent={Checkbox}
+                selectableRowsComponentProps={{ inkDisabled: true }}
+                contextActions={contextActions}
+                onSelectedRowsChange={handleRowSelected}
+                clearSelectedRows={toggleCleared}
+                pagination
+                paginationComponentOptions={paginationComponentOptions}
+                sortIcon={<ArrowDownward />}
+                customStyles={customStyles}
+            />
+        </>
     )
 }
 
