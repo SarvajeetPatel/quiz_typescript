@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import BarGraphCompo from "./BarGraphCompo"
 import PieChart from "./PieChart"
 import LineGraph from "./LineGraph"
-import Cookies from "js-cookie";
+import Cookies from "js-cookie"
 
 function Analysis() {
     var parsedData: any = [], navigate = useNavigate();
@@ -34,13 +34,11 @@ function Analysis() {
                             {parsedData?.map((item: any, index: number) => (
                                 index < 5 &&
                                 <article className="leaderboard__profile">
-                                    <img src="https://img.freepik.com/free-vector/isolated-young-handsome-man-different-poses-white-background-illustration_632498-859.jpg?size=338&ext=jpg&ga=GA1.1.553209589.1713657600&semt=ais"
+                                    <img src="/images/user-icon.avif"
                                         className="leaderboard__picture" alt="close" />
                                     <span className="leaderboard__name"> <b> {index + 1}. {item.name.split(' ')[0]} </b></span>
                                     <span className="leaderboard__value"> {(item?.testDate)}</span>
                                     <span className="leaderboard__value"> {item.score} </span>
-                                    {/* <br /> */}
-                                    {/* <br /> */}
                                 </article>
                             ))}
                         </main>

@@ -107,7 +107,7 @@
 .correctAnswer {
   padding-left: 10px;
   padding-right: 10px;
-  background-color: rgb(37, 150, 84);
+  background-color: rgb(73, 192, 120);
   width: fit-content;
 }
 
@@ -293,7 +293,7 @@ td {
 }
 
 .background-image {
-  background-image: url('https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?ixid=MnwxMDA0NDd8MHwxfHNlYXJjaHwxOXx8Y2FyZWVyfGVufDB8MHx8fDE2MzQxMzM4OTI&ixlib=rb-1.2.1&q=40&w=2560');
+  background-image: url('/public/images/bg-wallpaper.jpg');
   background-size: cover;
   position: fixed;
   height: 100vh;
@@ -520,6 +520,7 @@ dt {
 
 .leaderboard__profile {
   display: flex;
+  justify-content: space-between;
   column-gap: 10px;
   grid-template-columns: 1fr 3fr 1fr;
   align-items: center;
@@ -567,7 +568,7 @@ dt {
   opacity: .8;
   font-weight: 600;
   font-size: 13px;
-  margin-left: 3px;
+  padding-right: 13px;
   width: fit-content;
 }
 
